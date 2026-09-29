@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "Animal Marketplace",
+    "slug": "animal-marketplace",
+    "icon": "./assets/images/app-icon.png",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "animalmarketplace",
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Animal Marketplace to select animal photos."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow Animal Marketplace to use your location for nearby animal listings."
+        }
+      ],
+      "expo-notifications",
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.yourname.animalmarketplace",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e2b611e5-3e52-48e9-84d2-b0d111b29d26"
+      }
+    }
+  }
+}
