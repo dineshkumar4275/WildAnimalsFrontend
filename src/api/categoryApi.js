@@ -1,6 +1,27 @@
+
 import { api } from "./api";
 
-export async function getCategories() {
-  const response = await api.get("/categories");
-  return response.data;
-}
+// =====================================================
+// GET ALL CATEGORIES
+// GET /api/categories
+// =====================================================
+
+export const getCategories = async () => {
+  return await api.get("/categories");
+};
+
+// =====================================================
+// GET BREEDS BY CATEGORY
+// GET /api/categories/:categoryId/breeds
+// =====================================================
+
+export const getBreedsByCategory = async (categoryId) => {
+  if (!categoryId) {
+    throw new Error("Category ID is required");
+  }
+
+  return await api.get(
+    `/categories/${categoryId}/breeds`
+  );
+};
+

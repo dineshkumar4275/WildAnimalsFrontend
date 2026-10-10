@@ -1,46 +1,139 @@
-import { api } from "./api";
+import api from "./api";
 
-export async function getListings(params = {}) {
-  const response = await api.get("/listings", { params });
-  return response.data;
-}
+/* =========================================================
+   GET FAVORITES
+   GET /api/favorites
+========================================================= */
 
-export async function getListing(id) {
-  const response = await api.get(`/listings/${id}`);
-  return response.data;
-}
+export const getFavorites = async () => {
+  try {
+    const response = await api.get("/favorites");
 
-export async function getMyListings() {
-  const response = await api.get("/listings/my");
-  return response.data;
-}
+    // Backend returns: { success, count, favorites: [{id, listing_id, listing: {...}}] }
+    // Frontend expects: { listings: [...] }
 
-export async function createListing(data) {
-  const response = await api.post("/listings", data);
-  return response.data;
-}
+    const rawFavorites =
+      response?.favorites ||
+      response?.data?.favorites ||
+      [];
 
-export async function updateListing(id, data) {
-  const response = await api.put(`/listings/${id}`, data);
-  return response.data;
-}
+    // Extract `listing` from each favorite
+    const listings = rawFavorites
+      .map((fav) => {
+        const listing = fav?.listing || fav;
 
-export async function deleteListing(id) {
-  const response = await api.delete(`/listings/${id}`);
-  return response.data;
-}
+        if (!listing || typeof listing !== "object") {
+          return null;
+        }
 
-export async function addFavorite(id) {
-  const response = await api.post(`/favorites/${id}`);
-  return response.data;
-}
+        return {
+          ...listing,
+          // Ensure listing_id set
+          listing_id: listing.listing_id || listing.id || fav.listing_id,
+          id: listing.id || fav.listing_id,
+          // Favorite metadata
+          favorite_id: fav.id,
+          favorited_at: fav.created_at,
+          // Image shortcut
+          image_url:
+            listing.image_url ||
+            (Array.isArray(listing.images) && listing.images[0]?.media_url) ||
+            (Array.isArray(listing.images) && listing.images[0]?.url) ||
+            null,
+        };
+      })
+      .filter(Boolean);
 
-export async function removeFavorite(id) {
-  const response = await api.delete(`/favorites/${id}`);
-  return response.data;
-}
+    return {
+      success: true,
+      count: listings.length,
+      listings,
+    };
+  } catch (error) {
+    console.log("❌ getFavorites error:", error?.message);
+    throw error;
+  }
+};
 
-export async function getFavorites() {
-  const response = await api.get("/favorites");
-  return response.data;
-}
+/* =========================================================
+   ADD FAVORITE
+   POST /api/favorites
+========================================================= */
+
+export const addFavorite = async (listingId) => {
+  try {
+    const response = await api.post("/favorites", {
+      listing_id: listingId,
+    });
+
+    return response;
+  } catch (error) {
+    console.log("❌ addFavorite error:", error?.message);
+    throw error;
+  }
+};
+
+/* =========================================================
+   REMOVE FAVORITE
+   DELETE /api/favorites/:listingId
+========================================================= */
+
+export const removeFavorite = async (listingId) => {
+  try {
+    const response = await api.delete(`/favorites/${listingId}`);
+
+    return response;
+  } catch (error) {
+    console.log("❌ removeFavorite error:", error?.message);
+    throw error;
+  }
+};
+
+/* =========================================================
+   CHECK IF FAVORITED
+   GET /api/favorites/check/:listingId
+========================================================= */
+
+export const checkFavorite = async (listingId) => {
+  try {
+    const response = await api.get(`/favorites/check/${listingId}`);
+    return response?.isFavorite || false;
+  } catch (error) {
+    console.log("❌ checkFavorite error:", error?.message);
+    return false;
+  }
+};
+
+/* =========================================================
+   GET LISTINGS / SEARCH
+   GET /api/listings
+   Example:
+   /api/listings?q=dog
+========================================================= */
+
+
+
+
+export const getListings = async (params = {}) => {
+  try {
+    const response = await api.get("/listings", params);
+
+    console.log("=================================");
+    console.log("🔎 GET LISTINGS");
+    console.log("PARAMS:", params);
+    console.log("RESPONSE:", response);
+    console.log("=================================");
+
+    return response || {};
+  } catch (error) {
+    console.log("=================================");
+    console.log("❌ GET LISTINGS ERROR");
+    console.log("MESSAGE:", error?.message);
+    console.log("STATUS:", error?.response?.status);
+    console.log("RESPONSE:", error?.response?.data);
+    console.log("=================================");
+
+    throw error;
+  }
+};
+

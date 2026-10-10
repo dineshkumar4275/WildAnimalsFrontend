@@ -1,0 +1,45 @@
+{
+  "cli": {
+    "version": ">= 24.8.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "node": "20.18.3",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://wild-backend.vercel.app/api",
+        "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "node": "20.18.3",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://wild-backend.vercel.app/api",
+        "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "node": "20.18.3",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://wild-backend.vercel.app/api",
+        "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
